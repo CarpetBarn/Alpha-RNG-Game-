@@ -83,7 +83,7 @@ const DEFAULT_SETTINGS = {
   animations: true,
   lootFilterMode: 'normal',
   colorblindMode: false,
-  mobileLayoutMode: false,
+  mobileLayoutMode: true,
 };
 
 let settings = { ...DEFAULT_SETTINGS };
