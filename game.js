@@ -154,7 +154,6 @@ function setNavOpen(open) {
     if (mobile && nextOpen) body.classList.add('nav-open');
     else body.classList.remove('nav-open');
   }
-  if (mobile && prevOpen !== nextOpen) triggerHaptics();
 }
 
 function toggleNav() {
@@ -5273,21 +5272,11 @@ window.onload = () => {
     initGame();
   }
   const navBackdrop = document.getElementById('nav-backdrop');
-  const sidebar = document.querySelector('.sidebar');
-  if (navBackdrop) {
-    navBackdrop.addEventListener('click', () => { setNavOpen(false); triggerHaptics(); });
-    navBackdrop.addEventListener('touchstart', handleNavTouchStart, { passive: true });
-    navBackdrop.addEventListener('touchmove', handleNavTouchMove, { passive: true });
-  }
-  if (sidebar) {
-    sidebar.addEventListener('touchstart', handleNavTouchStart, { passive: true });
-    sidebar.addEventListener('touchmove', handleNavTouchMove, { passive: true });
-  }
+  if (navBackdrop) navBackdrop.addEventListener('click', () => setNavOpen(false));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && state.ui.mobileActive && state.ui.navOpen) {
       e.preventDefault();
       setNavOpen(false);
-      triggerHaptics();
     }
   });
   syncCombatActionBar();

@@ -553,6 +553,7 @@ body[data-mobile="true"] .sidebar.open {
 body[data-mobile="true"].nav-open #nav-backdrop {
   opacity: 1;
   pointer-events: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
 }
 
 body[data-mobile="true"].nav-open #combat-action-bar {
