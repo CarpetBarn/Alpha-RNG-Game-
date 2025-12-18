@@ -527,13 +527,15 @@ body[data-mobile="true"] .sidebar {
   max-width: 320px;
   height: calc(var(--vh) * 100);
   transform: none !important;     /* critical: remove compositor stacking bug */
+  position: fixed !important;
+  top: 0 !important;
   left: -110% !important;         /* fully off-screen */
   transition: left 0.25s ease;
   box-shadow: var(--shadow-card);
   padding: calc(12px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom)) 14px;
   gap: 10px;
   pointer-events: none;
-  z-index: 10001;                 /* absurdly high to beat everything */
+  z-index: 2147483647;            /* absurdly high to beat everything */
 }
 
 body[data-mobile="true"] .sidebar.open {
@@ -550,7 +552,7 @@ body[data-mobile="true"] .sidebar.open {
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s ease;
-  z-index: 10000; /* just below sidebar */
+  z-index: 2147483646; /* just below sidebar */
 }
 
 /* When nav is open on mobile */
