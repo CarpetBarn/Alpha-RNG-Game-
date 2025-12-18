@@ -556,6 +556,34 @@ body[data-mobile="true"].nav-open #nav-backdrop {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
 }
 
+/* Backdrop behind mobile sidebar */
+.nav-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 400;
+}
+
+/* When nav is open on mobile */
+body[data-mobile="true"].nav-open .nav-backdrop{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Keep sidebar above everything */
+body[data-mobile="true"] .sidebar{ z-index: 500; }
+
+/* Safari-safe: remove combat bar from interaction + view when nav is open */
+body[data-mobile="true"].nav-open #combat-action-bar.active{
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(120%);
+}
+.sidebar,
+.nav-backdrop {
 body[data-mobile="true"].nav-open #combat-action-bar {
   opacity: 0;
   pointer-events: none;

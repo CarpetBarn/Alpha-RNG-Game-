@@ -144,12 +144,20 @@ function isMobileViewport() {
 
 function setNavOpen(open) {
   const sidebar = document.querySelector('.sidebar');
+  const backdrop = document.getElementById('nav-backdrop');
   const body = document.body;
   const mobile = state.ui.mobileActive;
   const prevOpen = state.ui.navOpen;
   const nextOpen = mobile ? !!open : true;
+
   state.ui.navOpen = nextOpen;
+
   if (sidebar) sidebar.classList.toggle('open', nextOpen || !mobile);
+
+  // IMPORTANT: this enables all the nav-open CSS behaviors
+  document.body.classList.toggle('nav-open', nextOpen && mobile);
+
+  if (backdrop) backdrop.hidden = !(nextOpen && mobile);
   if (body) {
     if (mobile && nextOpen) body.classList.add('nav-open');
     else body.classList.remove('nav-open');
@@ -5271,6 +5279,29 @@ window.onload = () => {
     document.getElementById('class-select').style.display = 'none';
     initGame();
   }
+  (function initMobileNavOverlay() {
+    const backdrop = document.getElementById('nav-backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', () => {
+        if (state.ui.mobileActive && state.ui.navOpen) setNavOpen(false);
+      }, { passive: true });
+      backdrop.addEventListener('touchstart', handleNavTouchStart, { passive: true });
+      backdrop.addEventListener('touchmove', handleNavTouchMove, { passive: true });
+    }
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.addEventListener('touchstart', handleNavTouchStart, { passive: true });
+      sidebar.addEventListener('touchmove', handleNavTouchMove, { passive: true });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.ui.mobileActive && state.ui.navOpen) setNavOpen(false);
+    });
+    const autoClose = () => {
+      if (state.ui.mobileActive && state.ui.navOpen) setNavOpen(false);
+    };
+    window.addEventListener('orientationchange', autoClose);
+    window.addEventListener('resize', autoClose);
+  })();
   const navBackdrop = document.getElementById('nav-backdrop');
   if (navBackdrop) navBackdrop.addEventListener('click', () => setNavOpen(false));
   document.addEventListener('keydown', (e) => {
