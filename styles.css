@@ -539,26 +539,6 @@ body[data-mobile="true"] .sidebar.open {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
 }
 
-#nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(7, 10, 18, 0.65);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 180;
-}
-
-body[data-mobile="true"].nav-open #nav-backdrop {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-body[data-mobile="true"].nav-open #combat-action-bar {
-  pointer-events: none;
-  opacity: 0.35;
-}
-
 body[data-mobile="true"] .sidebar .nav-item {
   min-height: 44px;
 }
