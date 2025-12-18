@@ -530,11 +530,13 @@ body[data-mobile="true"] .sidebar {
   padding: calc(12px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom)) 14px;
   gap: 10px;
   pointer-events: none;
+  z-index: 220;
 }
 
 body[data-mobile="true"] .sidebar.open {
   transform: translateX(0);
   pointer-events: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
 }
 
 body[data-mobile="true"] .sidebar .nav-item {
