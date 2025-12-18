@@ -526,18 +526,50 @@ body[data-mobile="true"] .sidebar {
   width: 80%;
   max-width: 320px;
   height: calc(var(--vh) * 100);
-  transform: none !important;     /* critical: remove compositor stacking bug */
-  left: -110% !important;         /* fully off-screen */
-  transition: left 0.25s ease;
+  left: -100%;
   box-shadow: var(--shadow-card);
   padding: calc(12px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom)) 14px;
   gap: 10px;
   pointer-events: none;
-  z-index: 10001;                 /* absurdly high to beat everything */
+  z-index: 220;
 }
 
 body[data-mobile="true"] .sidebar.open {
-  left: 0 !important;
+  left: 0;
+  pointer-events: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+#nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 200;
+}
+
+body[data-mobile="true"].nav-open #nav-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+/* Backdrop behind mobile sidebar */
+.nav-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 400;
+}
+
+/* When nav is open on mobile */
+body[data-mobile="true"].nav-open .nav-backdrop{
+  opacity: 1;
   pointer-events: auto;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
 }
@@ -571,6 +603,27 @@ body[data-mobile="true"].nav-open #combat-action-bar *{
 }
 .sidebar,
 .nav-backdrop {
+  -webkit-transform: translateZ(0);
+}
+
+/* Keep sidebar above everything */
+body[data-mobile="true"] .sidebar{ z-index: 500; }
+
+/* Safari-safe: remove combat bar from interaction + view when nav is open */
+body[data-mobile="true"].nav-open #combat-action-bar.active{
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(120%);
+}
+.sidebar,
+.nav-backdrop {
+body[data-mobile="true"].nav-open #combat-action-bar {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+.sidebar,
+#nav-backdrop {
   -webkit-transform: translateZ(0);
 }
 
