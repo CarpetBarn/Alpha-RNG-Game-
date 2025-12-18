@@ -87,6 +87,7 @@ const DEFAULT_SETTINGS = {
 };
 
 let settings = { ...DEFAULT_SETTINGS };
+let lastHaptic = 0;
 
 function setVh() {
   const vh = window.innerHeight * 0.01;
@@ -103,6 +104,7 @@ function ensureOrientationListeners() {
   window.addEventListener('orientationchange', () => {
     updateOrientationFlag();
     syncCombatActionBar();
+    if (state.ui.mobileActive && state.ui.navOpen) setNavOpen(false);
   });
 }
 window.addEventListener('resize', () => {
@@ -110,6 +112,7 @@ window.addEventListener('resize', () => {
   applySettings();
   updateOrientationFlag();
   syncCombatActionBar();
+  if (state.ui.mobileActive && state.ui.navOpen) setNavOpen(false);
 });
 
 function loadSettings() {
@@ -127,6 +130,14 @@ function saveSettings() {
   localStorage.setItem('gameSettings', JSON.stringify(settings));
 }
 
+function triggerHaptics() {
+  const now = Date.now();
+  if (!navigator.vibrate) return;
+  if (now - lastHaptic < 150) return;
+  navigator.vibrate(10);
+  lastHaptic = now;
+}
+
 function isMobileViewport() {
   return window.innerWidth < 768;
 }
@@ -135,6 +146,7 @@ function setNavOpen(open) {
   const sidebar = document.querySelector('.sidebar');
   const body = document.body;
   const mobile = state.ui.mobileActive;
+  const prevOpen = state.ui.navOpen;
   const nextOpen = mobile ? !!open : true;
   state.ui.navOpen = nextOpen;
   if (sidebar) sidebar.classList.toggle('open', nextOpen || !mobile);
@@ -148,6 +160,31 @@ function toggleNav() {
   setNavOpen(!state.ui.navOpen);
 }
 
+function handleNavTouchStart(e) {
+  if (!state.ui.mobileActive || !state.ui.navOpen) return;
+  const touch = e.touches ? e.touches[0] : null;
+  if (!touch) return;
+  navSwipe.active = true;
+  navSwipe.startX = touch.clientX;
+  navSwipe.startY = touch.clientY;
+}
+
+function handleNavTouchMove(e) {
+  if (!navSwipe.active || !state.ui.mobileActive || !state.ui.navOpen) return;
+  const touch = e.touches ? e.touches[0] : null;
+  if (!touch) return;
+  const dx = touch.clientX - navSwipe.startX;
+  const dy = touch.clientY - navSwipe.startY;
+  if (Math.abs(dy) > Math.abs(dx)) {
+    if (Math.abs(dy) > 60) navSwipe.active = false;
+    return;
+  }
+  if (dx <= -60 && Math.abs(dy) <= 60) {
+    setNavOpen(false);
+    navSwipe.active = false;
+    triggerHaptics();
+  }
+}
 function updateSettingsCardLabels() {
   const map = {
     'ui-scale': settings.uiScale === 'small' ? 'Small' : settings.uiScale === 'large' ? 'Large' : 'Medium',
@@ -171,6 +208,12 @@ const actionDock = {
   actionPanel: null,
   autoActions: null,
   epicMount: null,
+};
+
+const navSwipe = {
+  active: false,
+  startX: 0,
+  startY: 0,
 };
 
 function ensureActionDockRefs() {
@@ -5182,15 +5225,15 @@ function initGame() {
   renderZones();
   renderEpicActionsMounts();
   const fightBtn = document.getElementById('fight-btn');
-  if (fightBtn) fightBtn.addEventListener('click', () => startFight(false));
+  if (fightBtn) fightBtn.addEventListener('click', () => { triggerHaptics(); startFight(false); });
   const bossBtn = document.getElementById('boss-btn');
-  if (bossBtn) bossBtn.addEventListener('click', () => startFight(true));
+  if (bossBtn) bossBtn.addEventListener('click', () => { triggerHaptics(); startFight(true); });
   const autoBtn = document.getElementById('auto-btn');
-  if (autoBtn) autoBtn.addEventListener('click', () => autoBattle());
+  if (autoBtn) autoBtn.addEventListener('click', () => { triggerHaptics(); autoBattle(); });
   const attackBtn = document.getElementById('attack-btn');
-  if (attackBtn) attackBtn.addEventListener('click', () => CombatSystem.playerAction('attack'));
+  if (attackBtn) attackBtn.addEventListener('click', () => { triggerHaptics(); CombatSystem.playerAction('attack'); });
   const healBtn = document.getElementById('heal-btn');
-  if (healBtn) healBtn.addEventListener('click', () => CombatSystem.playerAction('heal'));
+  if (healBtn) healBtn.addEventListener('click', () => { triggerHaptics(); CombatSystem.playerAction('heal'); });
   document.getElementById('refresh-shop').onclick = () => { generateShop(); renderShop(); saveGame(); };
   setInterval(() => updateEpicActionTimers(), 1000);
   EventBus.on('PLAYER_LEVEL_CHANGED', updateGateBossUI);
