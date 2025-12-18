@@ -133,10 +133,15 @@ function isMobileViewport() {
 
 function setNavOpen(open) {
   const sidebar = document.querySelector('.sidebar');
+  const body = document.body;
   const mobile = state.ui.mobileActive;
   const nextOpen = mobile ? !!open : true;
   state.ui.navOpen = nextOpen;
   if (sidebar) sidebar.classList.toggle('open', nextOpen || !mobile);
+  if (body) {
+    if (mobile && nextOpen) body.classList.add('nav-open');
+    else body.classList.remove('nav-open');
+  }
 }
 
 function toggleNav() {
@@ -5223,5 +5228,13 @@ window.onload = () => {
     document.getElementById('class-select').style.display = 'none';
     initGame();
   }
+  const navBackdrop = document.getElementById('nav-backdrop');
+  if (navBackdrop) navBackdrop.addEventListener('click', () => setNavOpen(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && state.ui.mobileActive && state.ui.navOpen) {
+      e.preventDefault();
+      setNavOpen(false);
+    }
+  });
   syncCombatActionBar();
 };
