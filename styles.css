@@ -589,6 +589,39 @@ body[data-mobile="true"].nav-open .nav-backdrop{
 body[data-mobile="true"].nav-open .nav-backdrop{
   opacity: 1;
   pointer-events: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+/* Backdrop behind mobile sidebar */
+.nav-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 2147483646; /* just below sidebar */
+}
+
+/* When nav is open on mobile */
+body[data-mobile="true"].nav-open .nav-backdrop{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Safari-safe: remove combat bar from interaction + view when nav is open */
+body[data-mobile="true"].nav-open #combat-action-bar.active{
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(120%);
+}
+body[data-mobile="true"].nav-open #combat-action-bar,
+body[data-mobile="true"].nav-open #combat-action-bar *{
+  pointer-events: none !important;
+}
+.sidebar,
+.nav-backdrop {
+  -webkit-transform: translateZ(0);
 }
 
 /* Safari-safe: remove combat bar from interaction + view when nav is open */
