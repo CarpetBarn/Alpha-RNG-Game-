@@ -1,10 +1,11 @@
-const CACHE_NAME = 'rpg-cache-v2';
+const CACHE_NAME = 'rpg-cache-v4';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './game.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon.svg'
 ];
 
 self.addEventListener('install', event => {
